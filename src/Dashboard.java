@@ -8,6 +8,9 @@
  * @author indee
  */
 import inventorymanagement.ProductDAO;
+import java.io.File;
+import java.io.PrintWriter;
+import javax.swing.JOptionPane;
 
 public class Dashboard extends javax.swing.JFrame {
 
@@ -345,7 +348,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
-        // TODO add your handling code here:
+        exportProductsToTxt();
     }//GEN-LAST:event_btnExportActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -414,6 +417,29 @@ public class Dashboard extends javax.swing.JFrame {
         cbProductSearch.removeAllItems();
         for (String name : ProductDAO.getAllProductNames()) {
             cbProductSearch.addItem(name);
+        }
+    }
+
+    private void exportProductsToTxt() {
+        java.util.List<Object[]> products = ProductDAO.getAllProducts();
+        java.io.File file = new java.io.File("products_export.txt");
+        try (java.io.PrintWriter writer = new java.io.PrintWriter(file)) {
+            // Write header
+            writer.println("Product ID\tProduct Name\tProduct Price\tProduct Qty\tProduct Code\tProduct Supplier");
+            // Write product data
+            for (Object[] row : products) {
+                writer.println(
+                    row[0] + "\t" +
+                    row[1] + "\t" +
+                    row[2] + "\t" +
+                    row[3] + "\t" +
+                    row[4] + "\t" +
+                    row[5]
+                );
+            }
+            javax.swing.JOptionPane.showMessageDialog(this, "Exported to " + file.getAbsolutePath());
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Export failed: " + e.getMessage());
         }
     }
 
